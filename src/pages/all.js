@@ -44,7 +44,7 @@ export default function SeventySevenBySeven(props){
     }
 
     useEffect(() => {
-        [...Array(WORK_COUNT+1).keys()].map(index => {
+        [...Array(WORK_COUNT).keys()].map(index => {
             fetchWork(index+1);
         })
     }, [])
@@ -57,9 +57,10 @@ export default function SeventySevenBySeven(props){
 
     return <Page>
         <Section dangerouslySetInnerHTML={{__html: props.content}}/>
+            <p>LOADED {works.length}/{WORK_COUNT}</p>
             <WorkWrap>
                 {works &&
-                    [...Array(WORK_COUNT+1).keys()].map(i => {
+                    [...Array(WORK_COUNT).keys()].map(i => {
                         const work = works[i]
                         return (
                             <WorkImages placeHolder={true} onClick={iterate}>
@@ -73,7 +74,7 @@ export default function SeventySevenBySeven(props){
                                     )
                                 }
                                 {!work && 
-                                    <p>LOAD#{i}</p>
+                                    <p>LOAD#{i+1}</p>
                                 }
                             </WorkImages>
                         )
