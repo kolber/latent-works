@@ -52,6 +52,7 @@ export default function SeventySevenBySeven(props){
     function iterate() {
         let set = 1;
         if(iteration < 7) set = iteration+1;
+        setIteration(set)
     }
 
     return <Page>
