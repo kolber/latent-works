@@ -11,11 +11,11 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import {breakpoint} from 'styled-components-breakpoint';
 
-const Section = styled.div`
+export const Section = styled.div`
     margin-bottom: 4vw;
 `
 
-const WorkWrap = styled.div`
+export const WorkWrap = styled.div`
     display: flex;
 
     ${breakpoint('sm', 'md')`
@@ -24,7 +24,7 @@ const WorkWrap = styled.div`
 
 `
 
-const WorkImages = styled.div`
+export const WorkImages = styled.div`
     position: relative;
     height: 45vw;
     width: 45vw;
@@ -34,7 +34,7 @@ const WorkImages = styled.div`
     `}
 `
 
-const WorkImage = styled(({src, children, placeholder, show, ...p}) => <img {...p} src={src}/>)`
+export const WorkImage = styled(({src, children, placeholder, show, ...p}) => <img {...p} src={src}/>)`
     cursor: pointer;
     margin: 0;
     padding: 0;
@@ -65,7 +65,7 @@ const WorkImage = styled(({src, children, placeholder, show, ...p}) => <img {...
     `}
 `
 
-const WorkDescription = styled.div`
+export const WorkDescription = styled.div`
     margin-left: 3vw;
     display: flex;
     flex-direction: column;
