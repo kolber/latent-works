@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>All | Latent Editions</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			body {
+				background-color: #ececec;
+				color: #000;
+				margin: 0;
+			}
+			.grid {
+				display: grid;
+				grid-template-columns: repeat( auto-fit, minmax(400px, 1fr) );
+				grid-gap: 12px;
+				padding: 20px;
+				position: relative;
+			}
+			.grid-image {
+				position: relative;
+				max-width: 777px;
+				aspect-ratio: 1 / 1;
+			}
+			.container {
+				position: absolute;
+				z-index: 1;
+			}
+		</style>
+		<script type="module">
+			import * as THREE from './three.module.js';
+			const r = await fetch(new URL('./editions.json', import.meta.url))
+			const data = await r.json()
+
+			let scene, camera, renderer
+
+			const geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1)
+			function createMesh(image, viewWidth, viewHeight) {
+				const buf = atob(image.querySelector('img').src.split(',')[1])
+				const cleanImage = `data:image/svg+xml;utf8,${encodeURIComponent(buf.replace('viewBox','width="256" height="256" viewBox'))}`
+				//console.log(cleanImage)
+
+				const { width, height, top, left } = image.getBoundingClientRect()
+				const loader = new THREE.TextureLoader();
+				const texture = loader.load(cleanImage, (tx) => {
+					tx.minFilter = THREE.LinearFilter
+					render()
+				})
+
+				const material = new THREE.MeshBasicMaterial({
+					map: texture
+				})
+				const mesh = new THREE.Mesh(geometry, material)
+				mesh.scale.set(width, height, 1)
+				mesh.position.set(left - viewWidth / 2 + width / 2, -top + viewHeight / 2 - height / 2, 0)
+				scene.add(mesh)
+			}
+
+			function render() {
+				renderer.render(scene, camera);
+			}
+
+			function onResize() {
+				const width = document.body.offsetWidth
+				const height = document.body.offsetHeight
+				camera.aspect = width / height
+				camera.updateProjectionMatrix()
+				renderer.setSize(width, height)
+			}
+
+			function init() {
+				const width = document.body.offsetWidth
+				const height = document.body.offsetHeight
+
+				scene = new THREE.Scene();
+				camera = new THREE.OrthographicCamera(
+					-width / 2,
+					width / 2,
+					height / 2,
+					-height / 2,
+					0.1,
+					10,
+				)
+				camera.position.set(0, 0, 1)
+
+				renderer = new THREE.WebGLRenderer( { antialias: false, alpha: true } );
+				renderer.setSize(width, height);
+				//renderer.outputEncoding = THREE.sRGBEncoding;
+
+				[...document.querySelectorAll('.grid-image')].forEach((img) =>
+					createMesh(img, width, height)
+				)
+
+				document.querySelector('.container').appendChild(renderer.domElement);
+				document.querySelector('.grid').style.visibility = 'hidden'
+				//window.addEventListener('resize', function() {
+				//	onResize()
+				//})
+			}
+
+			// Write HTML
+			const html = '<div class="grid-image"><img src="'+data.join('" /></div><div class="grid-image"><img src="')+'" /></div>'
+			document.querySelector('.grid').innerHTML = html
+
+			// Three
+			//function animate() {
+			//	requestAnimationFrame(animate);
+			//	render()
+			//}
+			init()
+			render()
+
+		</script>
+	</head>
+	<body>
+		<div class="container"></div>
+		<div class="grid"></div>
+	</body>
+</html>

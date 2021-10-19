@@ -32,7 +32,7 @@ const Header = styled(Grid)`
 `
 
 const Content = styled.main`
-
+  position: relative;
   margin-bottom: 3vw;
 
 `
